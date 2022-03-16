@@ -13,12 +13,131 @@ openingEl.appendChild(openingh1El);
 openingEl.appendChild(openingpEl);
 openingEl.appendChild(openingbuttonEl);
 
+var Qh2El = document.createElement("h2");
+var button1 = document.createElement("button");
+button1.setAttribute("data-answer", "wrong");
+button1.setAttribute("id", "option");
+var button2 = document.createElement("button");
+button2.setAttribute("data-answer", "wrong");
+button2.setAttribute("id", "option");
+var button3 = document.createElement("button");
+button3.setAttribute("data-answer", "wrong");
+button3.setAttribute("id", "option");
+var button4 = document.createElement("button");
+button4.setAttribute("data-answer", "wrong");
+button4.setAttribute("id", "option");
+var timer = document.getElementById("timer");
+
+const Q1 = {
+    Question: "The role of a meta tag is that it provides information about your webpage for _______.",
+    option1: "Back-end servers",
+    option2: "User Devices",
+    option3: "Search Engines",
+    option4: "Script Writers",
+    correct: button3
+};
+
+const Q2 = {
+    Question: "What does changing display: block to display: flex do to the html elements on a page?",
+    option1: "Makes them organize into a row vs. a column",
+    option2: "Makes them grow and shrink with the screen",
+    option3: "Makes them centered in the middle of the screen",
+    option4: "Makes them wrap to the bottom of the screen",
+    correct: button1
+};
+
+const Q3 = {
+    Question: "Data attributes are used to store data within what elements?",
+    option1: "CSS classes",
+    option2: "ID Tags",
+    option3: "Javascript Objects",
+    option4: "Semantic HTML",
+    correct: button4
+};
+
+const Q4 = {
+    Question: "How is 'this' used in an object?",
+    option1: "It refers to the global object",
+    option2: "It refers to the object it is within",
+    option3: "It refers to a variable just called last",
+    option4: "It refers to the first function within an object",
+    correct: button2
+};
+
+const Q5 = {
+    Question: "What does HTML DOM allow programmers to do?",
+    option1: "It allows for communication between a website's host and the page",
+    option2: "It checks the means through which written code is interpreted for a webpage",
+    option3: "It is an object model for how to get, change, add, or delete HTML",
+    option4: "It allows users to write information to the web page",
+    correct: button3
+};
+
+var Qlist = [Q1, Q2, Q3, Q4, Q5];
+
 var startBtn = document.querySelector("#start");
 startBtn.addEventListener("click", function() {
+Timer();
 rmvStart();
+setQ();
+loadQ();
 });
 function rmvStart() {
     for (var i = openingEl.getElementsByTagName('*').length; i > 0; i--) {
         openingEl.removeChild(openingEl.firstChild);
     }
+}
+var timerCount = 75;
+function Timer() {
+    timer.textContent = timerCount;
+    var myInterval = setInterval(function() {
+        if (timerCount > 0) {
+            timerCount--;
+            timer.textContent = timerCount;
+        }
+        else {
+            clearInterval(myInterval);
+            LoadEnd();ds
+        } 
+    }, 1000);
+}
+function setQ() {
+    openingEl.appendChild(Qh2El);
+    openingEl.appendChild(button1);
+    openingEl.appendChild(button2);
+    openingEl.appendChild(button3);
+    openingEl.appendChild(button4);
+}
+var Qiterate = 0;
+function loadQ() {
+    if (Qiterate < Qlist.length)
+    {
+        Qh2El.textContent = Qlist[Qiterate].Question;
+        button1.textContent = Qlist[Qiterate].option1;
+        button2.textContent = Qlist[Qiterate].option2;
+        button3.textContent = Qlist[Qiterate].option3;
+        button4.textContent = Qlist[Qiterate].option4;
+        Qlist[Qiterate].correct.dataset.answer = "correct";
+        Qiterate++;
+        console.log(Qiterate);
+    }
+    else {
+        loadEnd();
+    }
+    var clicked = "";
+    document.body.addEventListener("click", event => {
+        clicked = event.target.dataset.answer;
+    });
+    var options = document.querySelectorAll("#option");
+    options.forEach(function (i) {
+        i.addEventListener("click", function() {
+            if (clicked == "wrong") {
+                timerCount = timerCount - 10;
+            }
+            if (clicked) {
+                Qlist[Qiterate].correct.dataset.answer = "wrong";
+                loadQ();
+            }
+        });
+    });
 }
