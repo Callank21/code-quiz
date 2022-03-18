@@ -13,6 +13,8 @@ openingEl.appendChild(openingh1El);
 openingEl.appendChild(openingpEl);
 openingEl.appendChild(openingbuttonEl);
 
+var listener = document.querySelectorAll("#option");
+
 var Qh2El = document.createElement("h2");
 var button1 = document.createElement("button");
 button1.setAttribute("data-answer", "wrong");
@@ -76,16 +78,23 @@ const Q5 = {
 var Qlist = [Q1, Q2, Q3, Q4, Q5];
 
 var startBtn = document.querySelector("#start");
-startBtn.addEventListener("click", function() {
-Timer();
-rmvStart();
-setQ();
-loadQ();
-});
+ function startQuiz() {
+    Timer();
+    rmvStart();
+    setQ();
+    loadQ();
+ }
 function rmvStart() {
     for (var i = openingEl.getElementsByTagName('*').length; i > 0; i--) {
         openingEl.removeChild(openingEl.firstChild);
     }
+}
+function loadEnd() {
+    for (var i = openingEl.getElementsByTagName('*').length; i > 0; i--) {
+        openingEl.removeChild(openingEl.firstChild);
+    }
+    openingEl.appendChild.apply(openingpEl);
+    openingpEl.textContent = "Your Score: " + timerCount;
 }
 var timerCount = 75;
 function Timer() {
@@ -95,9 +104,13 @@ function Timer() {
             timerCount--;
             timer.textContent = timerCount;
         }
-        else {
+        else if (Qiterate >= Qlist.length) {
+            loadEnd();
             clearInterval(myInterval);
-            LoadEnd();ds
+        }
+        else {
+            loadEnd();
+            clearInterval(myInterval);
         } 
     }, 1000);
 }
@@ -108,36 +121,25 @@ function setQ() {
     openingEl.appendChild(button3);
     openingEl.appendChild(button4);
 }
-var Qiterate = 0;
+var Qiterate = -1;
 function loadQ() {
-    if (Qiterate < Qlist.length)
-    {
+        Qiterate++;
         Qh2El.textContent = Qlist[Qiterate].Question;
         button1.textContent = Qlist[Qiterate].option1;
         button2.textContent = Qlist[Qiterate].option2;
         button3.textContent = Qlist[Qiterate].option3;
         button4.textContent = Qlist[Qiterate].option4;
         Qlist[Qiterate].correct.dataset.answer = "correct";
-        Qiterate++;
-        console.log(Qiterate);
-    }
-    else {
-        loadEnd();
-    }
-    var clicked = "";
-    document.body.addEventListener("click", event => {
-        clicked = event.target.dataset.answer;
-    });
-    var options = document.querySelectorAll("#option");
-    options.forEach(function (i) {
-        i.addEventListener("click", function() {
-            if (clicked == "wrong") {
-                timerCount = timerCount - 10;
-            }
-            if (clicked) {
-                Qlist[Qiterate].correct.dataset.answer = "wrong";
-                loadQ();
-            }
-        });
-    });
 }
+function checkAnswer(event) {
+    if (event.target.dataset.answer == "wrong") {
+        timerCount = timerCount - 10;
+    }
+    if (event.target.dataset.answer) {
+        Qlist[Qiterate].correct.dataset.answer = "wrong";
+        loadQ();
+    }
+}
+
+startBtn.addEventListener("click", startQuiz);
+openingEl.addEventListener("click", checkAnswer);
