@@ -1,9 +1,11 @@
 var body = document.body;
 var openingEl = document.createElement("div");
+var endingEl = document.createElement("div");
 openingEl.className = "opening";
 var openingh1El = document.createElement("h1");
 openingh1El.textContent = "Coding Quiz Challenge";
 var openingpEl = document.createElement("p");
+var endingpEl = document.createElement("p");
 openingpEl.textContent = "Try to complete the following code-related questions within the time limit. Keep in mind that incorrect answers will penalize your score/time by 10 seconds!";
 var openingbuttonEl = document.createElement("button");
 openingbuttonEl.textContent = "Start Quiz!";
@@ -13,21 +15,18 @@ openingEl.appendChild(openingh1El);
 openingEl.appendChild(openingpEl);
 openingEl.appendChild(openingbuttonEl);
 
-var listener = document.querySelectorAll("#option");
-
 var Qh2El = document.createElement("h2");
 var button1 = document.createElement("button");
 button1.setAttribute("data-answer", "wrong");
-button1.setAttribute("id", "option");
 var button2 = document.createElement("button");
 button2.setAttribute("data-answer", "wrong");
-button2.setAttribute("id", "option");
 var button3 = document.createElement("button");
 button3.setAttribute("data-answer", "wrong");
-button3.setAttribute("id", "option");
 var button4 = document.createElement("button");
 button4.setAttribute("data-answer", "wrong");
-button4.setAttribute("id", "option");
+var input = document.createElement("input");
+var inputBtn = document.createElement("button");
+inputBtn.setAttribute("class", "end-button");
 var timer = document.getElementById("timer");
 
 const Q1 = {
@@ -79,40 +78,51 @@ var Qlist = [Q1, Q2, Q3, Q4, Q5];
 
 var startBtn = document.querySelector("#start");
  function startQuiz() {
-    Timer();
+    startTimer();
     rmvStart();
     setQ();
     loadQ();
  }
+ var timerCount = 75;
+var myInterval;
+function startTimer() {
+    timer.textContent = timerCount;
+    myInterval = setInterval(Timer, 1000);
+}
+function Timer() {
+    if (timerCount > 0) {
+    timerCount--;
+    timer.textContent = timerCount;
+    }
+    else {
+    loadEnd();
+    } 
+}
 function rmvStart() {
     for (var i = openingEl.getElementsByTagName('*').length; i > 0; i--) {
         openingEl.removeChild(openingEl.firstChild);
     }
 }
+var endInit;
 function loadEnd() {
+    clearInterval(myInterval);
+    removeEventListener("click", checkAnswer);
     for (var i = openingEl.getElementsByTagName('*').length; i > 0; i--) {
         openingEl.removeChild(openingEl.firstChild);
     }
-    openingEl.appendChild.apply(openingpEl);
+    openingEl.appendChild(Qh2El)
+    Qh2El.textContent = "All done!"
+    openingEl.appendChild(openingpEl);
     openingpEl.textContent = "Your Score: " + timerCount;
-}
-var timerCount = 75;
-function Timer() {
-    timer.textContent = timerCount;
-    var myInterval = setInterval(function() {
-        if (timerCount > 0) {
-            timerCount--;
-            timer.textContent = timerCount;
-        }
-        else if (Qiterate >= Qlist.length) {
-            loadEnd();
-            clearInterval(myInterval);
-        }
-        else {
-            loadEnd();
-            clearInterval(myInterval);
-        } 
-    }, 1000);
+    timer.textContent = "";
+    openingEl.appendChild(endingpEl);
+    endingpEl.textContent = "Initials:";
+    openingEl.appendChild(input);
+    input.setAttribute("type", "string");
+    input.setAttribute("id", "initials");
+    input.setAttribute("style", "width: 50px");
+    openingEl.appendChild(inputBtn);
+    inputBtn.textContent = "Submit";
 }
 function setQ() {
     openingEl.appendChild(Qh2El);
@@ -132,14 +142,25 @@ function loadQ() {
         Qlist[Qiterate].correct.dataset.answer = "correct";
 }
 function checkAnswer(event) {
+    console.log(event.target.dataset.answer);
+    console.log(Qiterate);
+    console.log(Qlist.length)
     if (event.target.dataset.answer == "wrong") {
         timerCount = timerCount - 10;
     }
-    if (event.target.dataset.answer) {
+    if (event.target.dataset.answer && Qiterate < Qlist.length - 1) {
         Qlist[Qiterate].correct.dataset.answer = "wrong";
         loadQ();
     }
+    else if (Qiterate == Qlist.length - 1) {
+        loadEnd();
+    }
+}
+
+writInit() {
+    
 }
 
 startBtn.addEventListener("click", startQuiz);
 openingEl.addEventListener("click", checkAnswer);
+endInit.addEventListener("keyup", writeInit());
