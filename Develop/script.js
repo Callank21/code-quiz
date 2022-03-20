@@ -1,6 +1,7 @@
 var body = document.body;
 var openingEl = document.createElement("div");
 var endingEl = document.createElement("div");
+var form = document.createElement("form");
 openingEl.className = "opening";
 var openingh1El = document.createElement("h1");
 openingh1El.textContent = "Coding Quiz Challenge";
@@ -26,7 +27,7 @@ var button4 = document.createElement("button");
 button4.setAttribute("data-answer", "wrong");
 var input = document.createElement("input");
 var inputBtn = document.createElement("button");
-inputBtn.setAttribute("class", "end-button");
+inputBtn.setAttribute("id", "end-button");
 var timer = document.getElementById("timer");
 
 const Q1 = {
@@ -79,7 +80,7 @@ var Qlist = [Q1, Q2, Q3, Q4, Q5];
 var startBtn = document.querySelector("#start");
  function startQuiz() {
     startTimer();
-    rmvStart();
+    rmvPage();
     setQ();
     loadQ();
  }
@@ -98,18 +99,20 @@ function Timer() {
     loadEnd();
     } 
 }
-function rmvStart() {
+function rmvPage() {
     for (var i = openingEl.getElementsByTagName('*').length; i > 0; i--) {
         openingEl.removeChild(openingEl.firstChild);
     }
 }
-var endInit;
-function loadEnd() {
-    clearInterval(myInterval);
-    removeEventListener("click", checkAnswer);
-    for (var i = openingEl.getElementsByTagName('*').length; i > 0; i--) {
+function finalRmvPage() {
+    for (var i = openingEl.getElementsByTagName('*').length - 1; i > 0; i--) {
         openingEl.removeChild(openingEl.firstChild);
     }
+}
+var endInit;
+var inputBtnRead = document.querySelector("#end-button");
+function loadEnd() {
+    clearInterval(myInterval);
     openingEl.appendChild(Qh2El)
     Qh2El.textContent = "All done!"
     openingEl.appendChild(openingpEl);
@@ -117,10 +120,9 @@ function loadEnd() {
     timer.textContent = "";
     openingEl.appendChild(endingpEl);
     endingpEl.textContent = "Initials:";
-    openingEl.appendChild(input);
+    openingEl.appendChild(form);
+    form.appendChild(input);
     input.setAttribute("type", "string");
-    input.setAttribute("id", "initials");
-    input.setAttribute("style", "width: 50px");
     openingEl.appendChild(inputBtn);
     inputBtn.textContent = "Submit";
 }
@@ -153,14 +155,29 @@ function checkAnswer(event) {
         loadQ();
     }
     else if (Qiterate == Qlist.length - 1) {
+        openingEl.removeEventListener("click", checkAnswer);
+        rmvPage();
         loadEnd();
     }
 }
-
-writInit() {
-    
+var initials = document.getElementById("initials");
+function writeInit() {
+    endInit = initials.value;
+}
+function scoreScreen() {
+    finalRmvPage();
+    localStorage.setItem(endInit,timerCount);
+    for (var i = 0; i < localStorage.length; i++) {
+        const key = localStorage.key(i);
+        openingEl.appendChild(endingEl);
+        endingEl.appendChild(endingpEl);
+        endingpEl.textContent = `${key} : ${localStorage.getItem(key)}`;
+    }   
 }
 
 startBtn.addEventListener("click", startQuiz);
 openingEl.addEventListener("click", checkAnswer);
-endInit.addEventListener("keyup", writeInit());
+if (initials) {
+    initials.addEventListener("keyup", writeInit);
+}
+inputBtn.addEventListener("click",scoreScreen);

@@ -50,3 +50,11 @@
 .opening button:hover {
     background: mediumorchid;
 }
+form {
+    display: flex;
+    justify-content: center;
+}
+form input {
+    margin-left: 25%;
+    margin-right:25%;
+}
