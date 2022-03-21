@@ -1,4 +1,4 @@
-var body = document.body;
+var body = document.body; //opening declarations for html elements
 var openingEl = document.createElement("div");
 var endingEl = document.createElement("div");
 var form = document.createElement("form");
@@ -11,12 +11,12 @@ openingpEl.textContent = "Try to complete the following code-related questions w
 var openingbuttonEl = document.createElement("button");
 openingbuttonEl.textContent = "Start Quiz!";
 openingbuttonEl.setAttribute('id','start');
-body.appendChild(openingEl);
+body.appendChild(openingEl); //writing the opening menu to the screen
 openingEl.appendChild(openingh1El);
 openingEl.appendChild(openingpEl);
 openingEl.appendChild(openingbuttonEl);
 
-var Qh2El = document.createElement("h2");
+var Qh2El = document.createElement("h2"); //declaration of the buttons for the quiz
 var button1 = document.createElement("button");
 button1.setAttribute("data-answer", "wrong");
 var button2 = document.createElement("button");
@@ -25,12 +25,12 @@ var button3 = document.createElement("button");
 button3.setAttribute("data-answer", "wrong");
 var button4 = document.createElement("button");
 button4.setAttribute("data-answer", "wrong");
-var input = document.createElement("input");
+var input = document.createElement("input"); //declaration for the input at the end of the quiz
 var inputBtn = document.createElement("button");
 inputBtn.setAttribute("id", "end-button");
 var timer = document.getElementById("timer");
 
-const Q1 = {
+const Q1 = { //objects with quiz questions
     Question: "The role of a meta tag is that it provides information about your webpage for _______.",
     option1: "Back-end servers",
     option2: "User Devices",
@@ -78,7 +78,7 @@ const Q5 = {
 var Qlist = [Q1, Q2, Q3, Q4, Q5];
 
 var startBtn = document.querySelector("#start");
- function startQuiz() {
+ function startQuiz() { //starts quiz
     startTimer();
     rmvPage();
     setQ();
@@ -86,7 +86,7 @@ var startBtn = document.querySelector("#start");
  }
  var timerCount = 75;
 var myInterval;
-function startTimer() {
+function startTimer() { //counts down from 75 and writes it to the screen
     timer.textContent = timerCount;
     myInterval = setInterval(Timer, 1000);
 }
@@ -99,7 +99,7 @@ function Timer() {
     loadEnd();
     } 
 }
-function rmvPage() {
+function rmvPage() { //deletes the appended child elements from the body div
     for (var i = openingEl.getElementsByTagName('*').length; i > 0; i--) {
         openingEl.removeChild(openingEl.firstChild);
     }
@@ -111,7 +111,7 @@ function finalRmvPage() {
 }
 var endInit;
 var inputBtnRead = document.querySelector("#end-button");
-function loadEnd() {
+function loadEnd() { //after quiz is ended, stops the button clicker and appends the end screen to the body div
     clearInterval(myInterval);
     openingEl.appendChild(Qh2El)
     Qh2El.textContent = "All done!"
@@ -126,7 +126,7 @@ function loadEnd() {
     openingEl.appendChild(inputBtn);
     inputBtn.textContent = "Submit";
 }
-function setQ() {
+function setQ() { // appends the quiz question elements to the body div after the quiz starts
     openingEl.appendChild(Qh2El);
     openingEl.appendChild(button1);
     openingEl.appendChild(button2);
@@ -134,7 +134,7 @@ function setQ() {
     openingEl.appendChild(button4);
 }
 var Qiterate = -1;
-function loadQ() {
+function loadQ() { // writes the questions that are in the question objects to html elements
         Qiterate++;
         Qh2El.textContent = Qlist[Qiterate].Question;
         button1.textContent = Qlist[Qiterate].option1;
@@ -143,10 +143,7 @@ function loadQ() {
         button4.textContent = Qlist[Qiterate].option4;
         Qlist[Qiterate].correct.dataset.answer = "correct";
 }
-function checkAnswer(event) {
-    console.log(event.target.dataset.answer);
-    console.log(Qiterate);
-    console.log(Qlist.length)
+function checkAnswer(event) { // when an answer is clicked, if its attribute is "wrong", take 10 seconds from the timer, else, skip to the next question
     if (event.target.dataset.answer == "wrong") {
         timerCount = timerCount - 10;
     }
@@ -154,17 +151,17 @@ function checkAnswer(event) {
         Qlist[Qiterate].correct.dataset.answer = "wrong";
         loadQ();
     }
-    else if (Qiterate == Qlist.length - 1) {
+    else if (Qiterate == Qlist.length - 1) { // if there are no more objects to write questions for, remove the questions and load the end screen
         openingEl.removeEventListener("click", checkAnswer);
         rmvPage();
         loadEnd();
     }
 }
 var initials = document.getElementById("initials");
-function writeInit() {
+function writeInit() { //writes the text input to a variable
     endInit = initials.value;
 }
-function scoreScreen() {
+function scoreScreen() { //saves the name: score pair to local Storage object then iterates through them displaying all previous scores
     finalRmvPage();
     localStorage.setItem(endInit,timerCount);
     for (var i = 0; i < localStorage.length; i++) {
@@ -175,7 +172,7 @@ function scoreScreen() {
     }   
 }
 
-startBtn.addEventListener("click", startQuiz);
+startBtn.addEventListener("click", startQuiz); // event listeners at the end
 openingEl.addEventListener("click", checkAnswer);
 if (initials) {
     initials.addEventListener("keyup", writeInit);
